@@ -11,7 +11,7 @@ const App = () => {
   const userName = cookies.Name;
   const [tasks, SetTasks] = useState(null);
   const apiUrl =
-    import.meta.env.VITE_SERVERURL || "http://213.139.208.200:3900";
+    import.meta.env.VITE_SERVERURL || "https://test-api.onedieta.ru/todo-app";
 
   const getData = async () => {
     try {

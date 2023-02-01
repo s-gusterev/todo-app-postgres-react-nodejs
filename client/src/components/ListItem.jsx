@@ -7,7 +7,7 @@ const ListItem = ({ task, getData }) => {
   const [showModal, setShowModal] = useState(false);
 
   const apiUrl =
-    import.meta.env.VITE_SERVERURL || "http://213.139.208.200:3900";
+    import.meta.env.VITE_SERVERURL || "https://test-api.onedieta.ru/todo-app";
 
   const deleteItem = async () => {
     try {

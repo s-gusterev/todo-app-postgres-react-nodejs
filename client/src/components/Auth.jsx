@@ -4,7 +4,7 @@ import { useCookies } from "react-cookie";
 const Auth = () => {
   const [cookies, setCookie, removeCookie] = useCookies(null);
   const apiUrl =
-    import.meta.env.VITE_SERVERURL || "http://213.139.208.200:3900";
+    import.meta.env.VITE_SERVERURL || "https://test-api.onedieta.ru/todo-app";
   const [error, setError] = useState(null);
   const [isLogin, setIslogin] = useState(true);
   const [email, setEmail] = useState(null);
