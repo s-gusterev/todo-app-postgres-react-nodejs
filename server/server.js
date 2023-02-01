@@ -13,7 +13,7 @@ app.use(express.json());
 
 // * Получение всех todos  *
 
-app.get("/todos/:userEmail", async (req, res) => {
+app.get("/todo-app/todos/:userEmail", async (req, res) => {
   const userEmail = req.params.userEmail;
   try {
     const todos = await pool.query(
@@ -29,7 +29,7 @@ app.get("/todos/:userEmail", async (req, res) => {
 
 // * Создание новой записи
 
-app.post("/todos", async (req, res) => {
+app.post("/todo-app/todos", async (req, res) => {
   const { user_email, title, progress, date } = req.body;
   console.log(user_email, title, progress, date);
   const id = uuidv4();
@@ -47,7 +47,7 @@ app.post("/todos", async (req, res) => {
 
 // * Редактирование записи
 
-app.put("/todos/:id", async (req, res) => {
+app.put("/todo-app/todos/:id", async (req, res) => {
   const { id } = req.params;
   const { user_email, title, progress, date } = req.body;
   try {
@@ -63,7 +63,7 @@ app.put("/todos/:id", async (req, res) => {
 
 // * Удаление
 
-app.delete("/todos/:id", async (req, res) => {
+app.delete("/todo-app/todos/:id", async (req, res) => {
   const { id } = req.params;
   try {
     const deleteToDo = await pool.query("DELETE FROM todos WHERE id = $1;", [
@@ -77,7 +77,7 @@ app.delete("/todos/:id", async (req, res) => {
 
 // * Регистрация
 
-app.post("/signup", async (req, res) => {
+app.post("/todo-app/signup", async (req, res) => {
   const { name, email, password } = req.body;
   const salt = bcrypt.genSaltSync(10);
   const hashedPassword = bcrypt.hashSync(password, salt);
@@ -99,7 +99,7 @@ app.post("/signup", async (req, res) => {
 
 //* Вход в систему
 
-app.post("/login", async (req, res) => {
+app.post("/todo-app/login", async (req, res) => {
   const { email, password } = req.body;
   try {
     const users = await pool.query("SELECT * FROM users WHERE email = $1", [
