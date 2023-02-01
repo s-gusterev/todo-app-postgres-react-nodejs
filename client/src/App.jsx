@@ -10,7 +10,8 @@ const App = () => {
   const authToken = cookies.Token;
   const userName = cookies.Name;
   const [tasks, SetTasks] = useState(null);
-  const apiUrl = import.meta.env.VITE_SERVERURL;
+  const apiUrl =
+    import.meta.env.VITE_SERVERURL || "http://213.139.208.200:3900";
 
   const getData = async () => {
     try {

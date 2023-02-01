@@ -6,7 +6,8 @@ import TickIcon from "./TickIcon";
 const ListItem = ({ task, getData }) => {
   const [showModal, setShowModal] = useState(false);
 
-  const apiUrl = import.meta.env.VITE_SERVERURL;
+  const apiUrl =
+    import.meta.env.VITE_SERVERURL || "http://213.139.208.200:3900";
 
   const deleteItem = async () => {
     try {
