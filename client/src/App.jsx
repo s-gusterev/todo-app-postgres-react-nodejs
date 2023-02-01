@@ -41,9 +41,11 @@ const App = () => {
         <>
           <ListHeader listName={"ToDo App"} getData={getData} />
           <p className="user-email">Welcom back {userEmail}</p>
-          {sortedTasks?.map((task) => (
-            <ListItem key={task.id} task={task} getData={getData} />
-          ))}
+          <ul className="list-todos">
+            {sortedTasks?.map((task) => (
+              <ListItem key={task.id} task={task} getData={getData} />
+            ))}
+          </ul>
         </>
       )}
       <p className="copyright">Creative Coding</p>

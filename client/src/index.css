@@ -120,20 +120,26 @@ input {
   position: absolute;
   left: 0;
   top: 0;
+  right: 0;
+  bottom: 0;
   width: 100vw;
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
+
+  z-index: 2;
 }
 
 .modal {
+  position: fixed;
   width: 500px;
   background-color: rgb(255, 255, 255);
   padding: 40px;
   border-radius: 10px;
   box-shadow: rgba(0, 0, 0, 0.05) 0 6px 24px rgba(0, 0, 0, 0.08) 0 0 0 1px;
+  z-index: 3;
+  left: 50%;
+  top: 30%;
+  transform: translate(-50%, -50%);
 }
 
 .modal .form-title-container {
@@ -218,4 +224,22 @@ input {
 
 .task-title {
   width: 300px;
+}
+
+.close-modal {
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 16px;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  border: rgba(0, 0, 0, 0.05) 2px solid !important;
+  background-image: url(../public/close.svg);
+  background-size: 20px 20px;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.list-todos {
+  padding-left: 0;
 }

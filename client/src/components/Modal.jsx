@@ -58,11 +58,14 @@ const Modal = ({ mode, setShowModal, getData, task }) => {
   };
 
   return (
-    <div className="overlay">
+    <>
       <div className="modal">
         <div className="form-title-container">
           <h3>Let's {mode} your task</h3>
-          <button onClick={() => setShowModal(false)}>X</button>
+          <button
+            className="close-modal"
+            onClick={() => setShowModal(false)}
+          ></button>
         </div>
         <form>
           <input
@@ -92,7 +95,8 @@ const Modal = ({ mode, setShowModal, getData, task }) => {
           />
         </form>
       </div>
-    </div>
+      <div className="overlay" onClick={() => setShowModal(false)}></div>
+    </>
   );
 };
 
