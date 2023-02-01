@@ -92,6 +92,7 @@ const Modal = ({ mode, setShowModal, getData, task }) => {
             className={mode}
             type="submit"
             onClick={editMode ? editData : postData}
+            disabled={!data.title}
           />
         </form>
       </div>

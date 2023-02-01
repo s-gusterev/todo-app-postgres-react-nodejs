@@ -1,4 +1,4 @@
-CREATE DATABASE todoapp;
+CREATE DATABASE todo_app;
 
 CREATE TABLE todos (
     id VARCHAR(255) PRIMARY KEY,
@@ -9,9 +9,12 @@ CREATE TABLE todos (
 );
 
 CREATE TABLE users (
+   user_name VARCHAR(20),
    email VARCHAR(255) PRIMARY KEY,
    hashed_password VARCHAR(255)
 );
+
+ALTER TABLE users ADD COLUMN name VARCHAR(20)
 
 
 /*INSERT INTO todos (id, user_email, title, progress, date) VALUES ('2', 'frontend.sg@gmail.com', 'First todo',10, '31.01.2023');*/

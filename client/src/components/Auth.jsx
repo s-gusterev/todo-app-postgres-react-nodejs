@@ -7,6 +7,7 @@ const Auth = () => {
   const [error, setError] = useState(null);
   const [isLogin, setIslogin] = useState(true);
   const [email, setEmail] = useState(null);
+  const [name, setName] = useState(null);
   const [password, setPassword] = useState(null);
   const [confirmPassword, setConfirmPassword] = useState(null);
 
@@ -24,7 +25,7 @@ const Auth = () => {
     const response = await fetch(`${apiUrl}/${endpoint}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ name, email, password }),
     });
 
     const data = await response.json();
@@ -34,6 +35,7 @@ const Auth = () => {
     } else {
       setCookie("Email", data.email);
       setCookie("Token", data.token);
+      setCookie("Name", data.name);
 
       window.location.reload();
     }
@@ -44,6 +46,13 @@ const Auth = () => {
       <div className="auth-container-box">
         <form>
           <h2>{isLogin ? "Please log in" : "Please sign up"}</h2>
+          {!isLogin && (
+            <input
+              type="name"
+              placeholder="name"
+              onChange={(e) => setName(e.target.value)}
+            />
+          )}
           <input
             type="email"
             placeholder="email"

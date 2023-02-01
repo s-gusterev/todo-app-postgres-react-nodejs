@@ -8,6 +8,7 @@ const App = () => {
   const [cookies, setCookie, removeCookie] = useCookies(null);
   const userEmail = cookies.Email;
   const authToken = cookies.Token;
+  const userName = cookies.Name;
   const [tasks, SetTasks] = useState(null);
   const apiUrl = import.meta.env.VITE_SERVERURL;
 
@@ -40,7 +41,7 @@ const App = () => {
       {authToken && (
         <>
           <ListHeader listName={"ToDo App"} getData={getData} />
-          <p className="user-email">Welcom back {userEmail}</p>
+          <p className="user-email">Welcom back {userName}</p>
           <ul className="list-todos">
             {sortedTasks?.map((task) => (
               <ListItem key={task.id} task={task} getData={getData} />

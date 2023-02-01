@@ -45,6 +45,9 @@ body {
   background-color: rgb(141, 181, 145);
 }
 
+.edit:disabled {
+  cursor: not-allowed;
+}
 .delete {
   border: 1.5px solid rgb(255, 175, 163);
   color: rgb(255, 175, 163);
@@ -71,6 +74,10 @@ body {
 .create:active {
   background-color: rgb(108, 115, 148);
   color: rgb(255, 255, 255);
+}
+
+.create:disabled {
+  cursor: not-allowed;
 }
 
 .signout {
@@ -216,10 +223,21 @@ input {
   background-color: rgb(216, 216, 216);
   border-radius: 7px;
   overflow: hidden;
+  position: relative;
 }
 
 .inner-bar {
   height: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.inner-bar span {
+  font-size: 11px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .task-title {

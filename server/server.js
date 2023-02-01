@@ -78,19 +78,22 @@ app.delete("/todos/:id", async (req, res) => {
 // * Регистрация
 
 app.post("/signup", async (req, res) => {
-  const { email, password } = req.body;
+  const { name, email, password } = req.body;
   const salt = bcrypt.genSaltSync(10);
   const hashedPassword = bcrypt.hashSync(password, salt);
   try {
     const signUp = await pool.query(
-      `INSERT INTO users (email, hashed_password) VALUES($1, $2)`,
-      [email, hashedPassword]
+      `INSERT INTO users (email, hashed_password, user_name) VALUES($1, $2, $3)`,
+      [email, hashedPassword, name]
     );
     const token = jwt.sign({ email }, "secret", { expiresIn: "24hr" });
-    res.json({ email, token });
+    res.json({ name, email, token });
   } catch (error) {
     console.error(error);
-    res.json({ detail: error.detail });
+    if (error.code === "23505") {
+      res.json({ detail: `${email} уже зарегистирован` });
+    }
+    // res.json({ detail: error.detail });
   }
 });
 
