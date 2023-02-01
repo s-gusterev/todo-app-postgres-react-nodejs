@@ -1,11 +1,16 @@
 import ListHeader from "./components/ListHeader";
 import ListItem from "./components/ListItem";
+import Auth from "./components/Auth";
 import { useEffect, useState } from "react";
+import { useCookies } from "react-cookie";
 
 const App = () => {
-  const userEmail = "frontend.sg@gmail.com";
+  const [cookies, setCookie, removeCookie] = useCookies(null);
+  const userEmail = cookies.Email;
+  const authToken = cookies.Token;
   const [tasks, SetTasks] = useState(null);
   const apiUrl = import.meta.env.VITE_SERVERURL;
+
   const getData = async () => {
     try {
       const response = await fetch(`${apiUrl}/todos/${userEmail}`);
@@ -18,7 +23,9 @@ const App = () => {
   };
 
   useEffect(() => {
-    getData();
+    if (authToken) {
+      getData();
+    }
   }, []);
 
   // Сортировка по дате
@@ -29,10 +36,15 @@ const App = () => {
 
   return (
     <div className="app">
-      <ListHeader listName={"ToDo App"} getData={getData} />
-      {sortedTasks?.map((task) => (
-        <ListItem key={task.id} task={task} getData={getData} />
-      ))}
+      {!authToken && <Auth />}
+      {authToken && (
+        <>
+          <ListHeader listName={"ToDo App"} getData={getData} />
+          {sortedTasks?.map((task) => (
+            <ListItem key={task.id} task={task} getData={getData} />
+          ))}
+        </>
+      )}
     </div>
   );
 };

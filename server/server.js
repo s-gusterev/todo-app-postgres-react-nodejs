@@ -5,6 +5,8 @@ const { v4: uuidv4 } = require("uuid");
 const cors = require("cors");
 const app = express();
 const pool = require("./db");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 app.use(cors());
 app.use(express.json());
@@ -59,6 +61,8 @@ app.put("/todos/:id", async (req, res) => {
   }
 });
 
+// * Удаление
+
 app.delete("/todos/:id", async (req, res) => {
   const { id } = req.params;
   try {
@@ -66,6 +70,35 @@ app.delete("/todos/:id", async (req, res) => {
       id,
     ]);
     res.json(deleteToDo);
+  } catch (error) {
+    console.error(error);
+  }
+});
+
+// * Регистрация
+
+app.post("/signup", async (req, res) => {
+  const { email, password } = req.body;
+  const salt = bcrypt.genSaltSync(10);
+  const hashedPassword = bcrypt.hashSync(password, salt);
+  try {
+    const signUp = await pool.query(
+      `INSERT INTO users (email, hashed_password) VALUES($1, $2)`,
+      [email, hashedPassword]
+    );
+    const token = jwt.sign({ email }, "secret", { expiresIn: "24hr" });
+    res.json({ email, token });
+  } catch (error) {
+    console.error(error);
+    res.json({ detail: error.detail });
+  }
+});
+
+//* Вход в систему
+
+app.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+  try {
   } catch (error) {
     console.error(error);
   }
