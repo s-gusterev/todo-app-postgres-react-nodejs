@@ -4,7 +4,6 @@ import Auth from "./components/Auth";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { motion, AnimatePresence } from "framer-motion";
-import ModalCreate from "./components/ModalCreate";
 
 const App = () => {
   const [cookies, setCookie, removeCookie] = useCookies(null);
@@ -12,7 +11,6 @@ const App = () => {
   const authToken = cookies.Token;
   const userName = cookies.Name;
   const [tasks, SetTasks] = useState([]);
-  const [showModal, setShowModal] = useState(false);
   // const MotionList = motion(ListItem, { forwardMotionProps: true });
   const apiUrl =
     import.meta.env.VITE_SERVERURL || "https://test-api.onedieta.ru/todo-app";
@@ -39,29 +37,13 @@ const App = () => {
   const sortedTasks = tasks?.sort(
     (a, b) => new Date(b.date) - new Date(a.date)
   );
-  console.log(showModal);
+  console.log(sortedTasks);
   return (
-    <>
-      {showModal && (
-        <ModalCreate
-          mode="create"
-          setShowModal={showModal}
-          handleClose={() => setShowModal(false)}
-          modeText="Добавить новое дело"
-          getData={getData}
-          task={tasks}
-        />
-      )}
-
-      {/* <ModalCreate /> */}
+    <div className="app">
       {!authToken && <Auth />}
       {authToken && (
         <>
-          <ListHeader
-            listName={"Список дел"}
-            getData={getData}
-            setShowModal={() => setShowModal(true)}
-          />
+          <ListHeader listName={"Список дел"} getData={getData} />
           <p className="user-email">Привет, {userName} 👋</p>
           <AnimatePresence>
             {sortedTasks?.length === 0 && (
@@ -91,7 +73,7 @@ const App = () => {
           © Сергей Густерёв
         </a>
       </p>
-    </>
+    </div>
   );
 };
 

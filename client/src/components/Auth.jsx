@@ -7,10 +7,10 @@ const Auth = () => {
     import.meta.env.VITE_SERVERURL || "https://test-api.onedieta.ru/todo-app";
   const [error, setError] = useState(null);
   const [isLogin, setIslogin] = useState(true);
-  const [email, setEmail] = useState(null);
+  const [email, setEmail] = useState("");
   const [name, setName] = useState("User");
-  const [password, setPassword] = useState(null);
-  const [confirmPassword, setConfirmPassword] = useState(null);
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const viewLogin = (status) => {
     setError(null);
