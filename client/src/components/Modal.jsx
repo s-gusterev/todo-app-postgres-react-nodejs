@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useCookies } from "react-cookie";
 
-const Modal = ({ mode, setShowModal, getData, task }) => {
+const Modal = ({ mode, setShowModal, getData, task, modeText }) => {
   const apiUrl =
     import.meta.env.VITE_SERVERURL || "https://test-api.onedieta.ru/todo-app";
   const editMode = mode === "edit" ? true : false;
@@ -12,6 +12,8 @@ const Modal = ({ mode, setShowModal, getData, task }) => {
     progress: editMode ? task.progress : "50",
     date: editMode ? task.date : new Date(),
   });
+
+  const [buttonText, setButtonText] = useState("Сохранить");
   const handleChange = (e) => {
     console.log("Change");
 
@@ -25,6 +27,7 @@ const Modal = ({ mode, setShowModal, getData, task }) => {
 
   const postData = async (e) => {
     e.preventDefault();
+    setButtonText("Сохранение...");
     try {
       const response = await fetch(`${apiUrl}/todos`, {
         method: "POST",
@@ -42,6 +45,7 @@ const Modal = ({ mode, setShowModal, getData, task }) => {
 
   const editData = async (e) => {
     e.preventDefault();
+    setButtonText("Сохранение...");
     try {
       const response = await fetch(`${apiUrl}/todos/${task.id}`, {
         method: "PUT",
@@ -62,7 +66,7 @@ const Modal = ({ mode, setShowModal, getData, task }) => {
     <>
       <div className="modal">
         <div className="form-title-container">
-          <h3>Let's {mode} your task</h3>
+          <h3>{modeText}</h3>
           <button
             className="close-modal"
             onClick={() => setShowModal(false)}
@@ -73,12 +77,15 @@ const Modal = ({ mode, setShowModal, getData, task }) => {
             type="text"
             required
             maxLength={30}
-            placeholder=" Your task goes here"
+            placeholder=" Название"
             name="title"
             value={data.title || ""}
             onChange={handleChange}
           />
-          <label htmlFor="range">Drag to select your current progress</label>
+          <label htmlFor="range">
+            Перетащите ползунок для отображения прогресса задачи
+          </label>
+          <p className="progress-text">{data.progress} %</p>
           <input
             id="range"
             type="range"
@@ -90,10 +97,11 @@ const Modal = ({ mode, setShowModal, getData, task }) => {
             onChange={handleChange}
           />
           <input
-            className={mode}
+            className="edit"
             type="submit"
             onClick={editMode ? editData : postData}
             disabled={!data.title}
+            value={buttonText}
           />
         </form>
       </div>

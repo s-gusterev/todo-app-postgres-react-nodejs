@@ -20,7 +20,7 @@ const Auth = () => {
   const handleSubmit = async (e, endpoint) => {
     e.preventDefault();
     if (!isLogin && password !== confirmPassword) {
-      setError("Make sure passwords match");
+      setError("Подтвердите пароль");
       return;
     }
     const response = await fetch(`${apiUrl}/${endpoint}`, {
@@ -46,24 +46,24 @@ const Auth = () => {
     <div className="auth-container">
       <div className="auth-container-box">
         <form>
-          <h2>{isLogin ? "Please log in" : "Please sign up"}</h2>
+          <h2>{isLogin ? "Войти" : "Зарегистрироваться"}</h2>
           {!isLogin && (
             <input
               type="name"
-              placeholder="name"
+              placeholder="Имя"
               onChange={(e) => setName(e.target.value)}
             />
           )}
           <input
             type="email"
-            placeholder="email"
+            placeholder="Email"
             onChange={(e) => setEmail(e.target.value)}
           />
           <input
             type="password"
             name=""
             id=""
-            placeholder="password"
+            placeholder="Пароль"
             onChange={(e) => setPassword(e.target.value)}
           />
           {!isLogin && (
@@ -71,16 +71,17 @@ const Auth = () => {
               type="password"
               name=""
               id=""
-              placeholder="confirm password"
+              placeholder="Подтвердите пароль"
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
           )}
           <input
             type="submit"
             className="create"
+            disabled={!password || !name || !email}
             onClick={(e) => handleSubmit(e, isLogin ? "login" : "signup")}
           />
-          {error && <p>{error}</p>}
+          {error && <p className="error-auth">{error}</p>}
         </form>
         <div className="auth-options">
           <button
@@ -91,7 +92,7 @@ const Auth = () => {
                 : "rgb(188, 188, 188)",
             }}
           >
-            Signup
+            Регистрация
           </button>
           <button
             onClick={() => viewLogin(true)}
@@ -101,7 +102,7 @@ const Auth = () => {
                 : "rgb(188, 188, 188)",
             }}
           >
-            Login
+            Вход
           </button>
         </div>
       </div>
