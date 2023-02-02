@@ -8,7 +8,7 @@ const Auth = () => {
   const [error, setError] = useState(null);
   const [isLogin, setIslogin] = useState(true);
   const [email, setEmail] = useState(null);
-  const [name, setName] = useState(null);
+  const [name, setName] = useState("User");
   const [password, setPassword] = useState(null);
   const [confirmPassword, setConfirmPassword] = useState(null);
 
@@ -52,12 +52,16 @@ const Auth = () => {
               type="name"
               placeholder="Имя"
               onChange={(e) => setName(e.target.value)}
+              required
+              value={name}
             />
           )}
           <input
             type="email"
             placeholder="Email"
             onChange={(e) => setEmail(e.target.value)}
+            required
+            value={email}
           />
           <input
             type="password"
@@ -65,6 +69,8 @@ const Auth = () => {
             id=""
             placeholder="Пароль"
             onChange={(e) => setPassword(e.target.value)}
+            required
+            value={password}
           />
           {!isLogin && (
             <input
@@ -73,12 +79,14 @@ const Auth = () => {
               id=""
               placeholder="Подтвердите пароль"
               onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+              value={confirmPassword}
             />
           )}
           <input
             type="submit"
             className="create"
-            disabled={!password || !name || !email}
+            disabled={(!password && !email) || !name}
             onClick={(e) => handleSubmit(e, isLogin ? "login" : "signup")}
           />
           {error && <p className="error-auth">{error}</p>}
