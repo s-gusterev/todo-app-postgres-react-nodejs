@@ -4,7 +4,7 @@ import Auth from "./components/Auth";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { motion, AnimatePresence } from "framer-motion";
-import ModalCreate from "./components/ModalCreate";
+import ModalMain from "./components/ModalMain";
 
 const App = () => {
   const [cookies, setCookie, removeCookie] = useCookies(null);
@@ -12,7 +12,8 @@ const App = () => {
   const authToken = cookies.Token;
   const userName = cookies.Name;
   const [tasks, SetTasks] = useState([]);
-  const [showModal, setShowModal] = useState(false);
+  const [showModalCreate, setShowModalCreate] = useState(false);
+  const [showModalEdit, setShowModalEdit] = useState(false);
   // const MotionList = motion(ListItem, { forwardMotionProps: true });
   const apiUrl =
     import.meta.env.VITE_SERVERURL || "https://test-api.onedieta.ru/todo-app";
@@ -39,28 +40,37 @@ const App = () => {
   const sortedTasks = tasks?.sort(
     (a, b) => new Date(b.date) - new Date(a.date)
   );
-  console.log(showModal);
+
   return (
     <>
-      {showModal && (
-        <ModalCreate
+      {showModalCreate && (
+        <ModalMain
           mode="create"
-          setShowModal={showModal}
-          handleClose={() => setShowModal(false)}
+          setShowModal={showModalCreate}
+          handleClose={() => setShowModalCreate(false)}
           modeText="Добавить новое дело"
           getData={getData}
           task={tasks}
         />
       )}
+      {showModalEdit && (
+        <ModalMain
+          mode="edit"
+          setShowModal={showModalEdit}
+          handleClose={() => setShowModalEdit(false)}
+          modeText="Редактировать дело"
+          getData={getData}
+          task={tasks}
+        />
+      )}
 
-      {/* <ModalCreate /> */}
       {!authToken && <Auth />}
       {authToken && (
         <>
           <ListHeader
             listName={"Список дел"}
             getData={getData}
-            setShowModal={() => setShowModal(true)}
+            setShowModal={() => setShowModalCreate(true)}
           />
           <p className="user-email">Привет, {userName} 👋</p>
           <AnimatePresence>
