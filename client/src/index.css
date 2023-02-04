@@ -24,16 +24,16 @@ body {
   align-items: center;
 }
 
-.button-container button {
+/* .button-container button {
   margin: 0 5px;
   padding: 5px 10px;
   border-radius: 12px;
   background-color: transparent;
   cursor: pointer;
   font-size: 10px;
-}
+} */
 
-.edit {
+/* .edit {
   border: 1.5px solid rgb(141, 181, 145);
   color: rgb(141, 181, 145);
   cursor: pointer;
@@ -82,7 +82,7 @@ body {
 
 .create:disabled {
   cursor: not-allowed;
-}
+} */
 
 .signout {
   border: 1.5px solid rgb(255, 175, 163);

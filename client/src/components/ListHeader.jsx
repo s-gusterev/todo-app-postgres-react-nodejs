@@ -1,14 +1,10 @@
-import Modal from "./Modal";
-import { useState } from "react";
 import { useCookies } from "react-cookie";
-import { motion, AnimatePresence } from "framer-motion";
 import { AppBar } from "@mui/material";
 import { Container } from "@mui/material";
-import { Button, Box } from "@mui/material";
+import { Box } from "@mui/material";
 import MainButton from "./MainButton";
 
 const ListHeader = ({ listName, getData, setShowModal }) => {
-  // const [showModal, setShowModal] = useState(false);
   const [cookies, setCookie, removeCookie] = useCookies(null);
 
   const singOut = () => {
@@ -43,34 +39,6 @@ const ListHeader = ({ listName, getData, setShowModal }) => {
             text="Выход"
           />
         </Box>
-        {/* <AnimatePresence>
-          {showModal && (
-            <motion.div
-              style={{
-                position: "absolute",
-                left: 0,
-                right: 0,
-                bottom: 0,
-                top: 0,
-                zIndex: 4,
-                overflow: "hidden",
-              }}
-              initial={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-            >
-              <Modal
-                key="modal"
-                mode="create"
-                setShowModal={setShowModal}
-                task={null}
-                getData={getData}
-                modeText="Создать новое дело"
-              />
-            </motion.div>
-          )}
-        </AnimatePresence> */}
       </Container>
     </AppBar>
   );
