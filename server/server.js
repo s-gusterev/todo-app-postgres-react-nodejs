@@ -1,23 +1,23 @@
-require("dotenv").config();
+require('dotenv').config();
 const PORT = process.env.PORT || 8000;
-const express = require("express");
-const { v4: uuidv4 } = require("uuid");
-const cors = require("cors");
+const express = require('express');
+const { v4: uuidv4 } = require('uuid');
+const cors = require('cors');
 const app = express();
-const pool = require("./db");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
+const pool = require('./db');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 app.use(cors());
 app.use(express.json());
 
 // * Получение всех todos  *
 
-app.get("/todo-app/todos/:userEmail", async (req, res) => {
+app.get('/todo-app/todos/:userEmail', async (req, res) => {
   const userEmail = req.params.userEmail;
   try {
     const todos = await pool.query(
-      "SELECT * FROM todos WHERE user_email = $1",
+      'SELECT * FROM todos WHERE user_email = $1',
       [userEmail]
     );
     console.log(todos.rows);
@@ -29,7 +29,7 @@ app.get("/todo-app/todos/:userEmail", async (req, res) => {
 
 // * Создание новой записи
 
-app.post("/todo-app/todos", async (req, res) => {
+app.post('/todo-app/todos', async (req, res) => {
   const { user_email, title, progress, date } = req.body;
   console.log(user_email, title, progress, date);
   const id = uuidv4();
@@ -47,12 +47,12 @@ app.post("/todo-app/todos", async (req, res) => {
 
 // * Редактирование записи
 
-app.put("/todo-app/todos/:id", async (req, res) => {
+app.put('/todo-app/todos/:id', async (req, res) => {
   const { id } = req.params;
   const { user_email, title, progress, date } = req.body;
   try {
     const editToDo = await pool.query(
-      "UPDATE todos SET user_email = $1, title = $2, progress = $3, date = $4 WHERE id = $5;",
+      'UPDATE todos SET user_email = $1, title = $2, progress = $3, date = $4 WHERE id = $5;',
       [user_email, title, progress, date, id]
     );
     res.json(editToDo);
@@ -63,10 +63,10 @@ app.put("/todo-app/todos/:id", async (req, res) => {
 
 // * Удаление
 
-app.delete("/todo-app/todos/:id", async (req, res) => {
+app.delete('/todo-app/todos/:id', async (req, res) => {
   const { id } = req.params;
   try {
-    const deleteToDo = await pool.query("DELETE FROM todos WHERE id = $1;", [
+    const deleteToDo = await pool.query('DELETE FROM todos WHERE id = $1;', [
       id,
     ]);
     res.json(deleteToDo);
@@ -77,7 +77,7 @@ app.delete("/todo-app/todos/:id", async (req, res) => {
 
 // * Регистрация
 
-app.post("/todo-app/signup", async (req, res) => {
+app.post('/todo-app/signup', async (req, res) => {
   const { name, email, password } = req.body;
   const salt = bcrypt.genSaltSync(10);
   const hashedPassword = bcrypt.hashSync(password, salt);
@@ -86,11 +86,11 @@ app.post("/todo-app/signup", async (req, res) => {
       `INSERT INTO users (email, hashed_password, user_name) VALUES($1, $2, $3)`,
       [email, hashedPassword, name]
     );
-    const token = jwt.sign({ email }, "secret", { expiresIn: "24hr" });
+    const token = jwt.sign({ email }, 'secret', { expiresIn: '24hr' });
     res.json({ name, email, token });
   } catch (error) {
     console.error(error);
-    if (error.code === "23505") {
+    if (error.code === '23505') {
       res.json({ detail: `${email} уже зарегистирован` });
     }
     // res.json({ detail: error.detail });
@@ -99,24 +99,28 @@ app.post("/todo-app/signup", async (req, res) => {
 
 //* Вход в систему
 
-app.post("/todo-app/login", async (req, res) => {
+app.post('/todo-app/login', async (req, res) => {
   const { email, password } = req.body;
   try {
-    const users = await pool.query("SELECT * FROM users WHERE email = $1", [
+    const users = await pool.query('SELECT * FROM users WHERE email = $1', [
       email,
     ]);
     if (!users.rows.length) {
-      return res.json({ detail: "User does not exist!" });
+      return res.json({ detail: 'User does not exist!' });
     }
     const success = await bcrypt.compare(
       password,
       users.rows[0].hashed_password
     );
-    const token = jwt.sign({ email }, "secret", { expiresIn: "24hr" });
+    const token = jwt.sign({ email }, 'secret', { expiresIn: '24hr' });
     if (success) {
-      res.json({ email: users.rows[0].email, token });
+      res.json({
+        email: users.rows[0].email,
+        token,
+        name: users.rows[0].user_name,
+      });
     } else {
-      res.json({ detail: "Login failed" });
+      res.json({ detail: 'Login failed' });
     }
   } catch (error) {
     console.error(error);
