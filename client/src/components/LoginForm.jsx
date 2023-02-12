@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { useCookies } from 'react-cookie';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
 
 const LoginForm = () => {
   const [cookies, setCookie, removeCookie] = useCookies(null);
@@ -8,10 +10,11 @@ const LoginForm = () => {
   const [error, setError] = useState(null);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [buttonText, setButtonText] = useState('Войти');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    setButtonText('Входим...');
     const response = await fetch(`${apiUrl}/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -22,6 +25,7 @@ const LoginForm = () => {
 
     if (data.detail) {
       setError(data.detail);
+      setButtonText('Войти');
     } else {
       setCookie('Email', data.email);
       setCookie('Token', data.token);
@@ -29,34 +33,52 @@ const LoginForm = () => {
 
       window.location.reload();
     }
-    console.log(data);
   };
 
   return (
     <form>
       <h2>Войти</h2>
-      <input
+
+      <TextField
+        required
+        autoFocus
+        margin='dense'
+        id='email'
+        label='E-mail'
         type='email'
-        placeholder='Email'
-        name='email'
-        onChange={(e) => setEmail(e.target.value)}
-        required
+        fullWidth
+        variant='standard'
         value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        name='email'
+        sx={{ marginBottom: 2 }}
       />
-      <input
-        type='password'
-        name='name'
-        placeholder='Пароль'
-        onChange={(e) => setPassword(e.target.value)}
+
+      <TextField
         required
+        autoFocus
+        margin='dense'
+        id='password'
+        label='Пароль'
+        type='password'
+        fullWidth
+        variant='standard'
         value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        name='password'
+        sx={{ marginBottom: 5 }}
       />
-      <input
-        type='submit'
-        className='create'
-        disabled={!email || !password}
+
+      <Button
+        variant='contained'
+        color='success'
+        size='large'
         onClick={(e) => handleSubmit(e)}
-      />
+        type='submit'
+      >
+        {buttonText}
+      </Button>
+
       {error && <p className='error-auth'>{error}</p>}
     </form>
   );

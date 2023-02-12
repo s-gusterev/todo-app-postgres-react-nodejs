@@ -106,7 +106,7 @@ app.post('/todo-app/login', async (req, res) => {
       email,
     ]);
     if (!users.rows.length) {
-      return res.json({ detail: 'User does not exist!' });
+      return res.json({ detail: `Пользователь ${email} не зарегистрирован!` });
     }
     const success = await bcrypt.compare(
       password,
@@ -120,7 +120,7 @@ app.post('/todo-app/login', async (req, res) => {
         name: users.rows[0].user_name,
       });
     } else {
-      res.json({ detail: 'Login failed' });
+      res.json({ detail: 'Неправильно введен email или пароль' });
     }
   } catch (error) {
     console.error(error);

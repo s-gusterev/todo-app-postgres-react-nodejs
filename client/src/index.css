@@ -24,65 +24,6 @@ body {
   align-items: center;
 }
 
-/* .button-container button {
-  margin: 0 5px;
-  padding: 5px 10px;
-  border-radius: 12px;
-  background-color: transparent;
-  cursor: pointer;
-  font-size: 10px;
-} */
-
-/* .edit {
-  border: 1.5px solid rgb(141, 181, 145);
-  color: rgb(141, 181, 145);
-  cursor: pointer;
-}
-
-.edit:hover {
-  background-color: rgb(182, 223, 186);
-}
-
-.edit:active {
-  color: rgb(255, 255, 255);
-  background-color: rgb(141, 181, 145);
-}
-
-.edit:disabled {
-  cursor: not-allowed;
-}
-.delete {
-  border: 1.5px solid rgb(255, 175, 163);
-  color: rgb(255, 175, 163);
-}
-
-.delete:hover {
-  background-color: rgb(255, 201, 193);
-}
-
-.delete:active {
-  color: rgb(255, 255, 255);
-  background-color: rgb(255, 175, 163);
-}
-
-.create {
-  border: 1.5px solid rgb(108, 115, 148);
-  color: rgb(108, 115, 148);
-  cursor: pointer;
-}
-
-.create:hover {
-  background-color: rgb(131, 138, 172);
-}
-
-.create:active {
-  background-color: rgb(108, 115, 148);
-  color: rgb(255, 255, 255);
-}
-
-.create:disabled {
-  cursor: not-allowed;
-} */
 
 .signout {
   border: 1.5px solid rgb(255, 175, 163);
@@ -127,56 +68,7 @@ input {
   padding: 10px;
 }
 
-/* Modal */
 
-.overlay {
-  position: absolute;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5);
-
-  z-index: 2;
-}
-
-.modal {
-  position: fixed;
-  width: 500px;
-  background-color: rgb(255, 255, 255);
-  padding: 40px;
-  border-radius: 10px;
-  box-shadow: rgba(0, 0, 0, 0.05) 0 6px 24px rgba(0, 0, 0, 0.08) 0 0 0 1px;
-  z-index: 3;
-  left: 50%;
-  top: 30%;
-  transform: translate(-50%, -50%);
-}
-
-.modal .form-title-container {
-  display: flex;
-  justify-content: space-between;
-}
-
-.modal .form-title-container button {
-  border: 0;
-  background-color: transparent;
-}
-
-.modal .form-title-container button:active {
-  color: rgb(250, 50, 50);
-}
-
-.modal form {
-  display: flex;
-  flex-direction: column;
-}
-
-.modal label {
-  font-size: 13px;
-}
 
 .auth-container {
   display: flex;
@@ -294,5 +186,7 @@ input {
 }
 
 .error-auth {
-  margin: 0;
+  margin-top:30px;
+  margin-inline: auto;
+  color: #d32f2f;
 }

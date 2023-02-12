@@ -1,4 +1,4 @@
-import { Button } from "@mui/material";
+import { Button } from '@mui/material';
 
 const MainButton = ({ color, variant, handleClick, text, disabled, type }) => {
   return (
@@ -6,9 +6,10 @@ const MainButton = ({ color, variant, handleClick, text, disabled, type }) => {
       color={color}
       variant={variant}
       onClick={handleClick}
-      sx={{ textTransform: "uppercase" }}
+      sx={{ textTransform: 'uppercase' }}
       disabled={disabled}
       type={type}
+      disableFocusRipple={true}
     >
       {text}
     </Button>
