@@ -86,7 +86,7 @@ const Auth = () => {
           <input
             type="submit"
             className="create"
-            disabled={(!password && !email) || !name}
+            disabled={(!email || !password) || (!name || !confirmPassword || !email || !password )}
             onClick={(e) => handleSubmit(e, isLogin ? "login" : "signup")}
           />
           {error && <p className="error-auth">{error}</p>}
