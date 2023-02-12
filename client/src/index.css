@@ -64,16 +64,11 @@ input {
   justify-content: space-between;
 }
 
-.tick {
-  padding: 10px;
-}
-
-
-
 .auth-container {
   display: flex;
   justify-content: center;
   margin: 5px;
+  height: 100vh;
 }
 
 .auth-container-box {
@@ -81,6 +76,7 @@ input {
   border-radius: 10px;
   overflow: hidden;
   box-shadow: rgba(0, 0, 0, 0.05) 0 6px 24px, rgba(0, 0, 0, 0.08) 0 0 0 1px;
+  margin: auto;
 }
 
 .auth-container-box form {
@@ -153,20 +149,6 @@ input {
 
 .task-title {
   width: 300px;
-}
-
-.close-modal {
-  cursor: pointer;
-  font-weight: 500;
-  font-size: 16px;
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
-  border: rgba(0, 0, 0, 0.05) 2px solid !important;
-  background-image: url(../public/close.svg);
-  background-size: 20px 20px;
-  background-repeat: no-repeat;
-  background-position: center;
 }
 
 .list-todos {

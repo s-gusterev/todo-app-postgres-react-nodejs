@@ -10,7 +10,13 @@ const Auth = () => {
   };
 
   return (
-    <div className='auth-container'>
+    <div
+      initial={{ opacity: 0, y: '-100%' }}
+      transition={{ duration: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0 }}
+      className='auth-container'
+    >
       <div className='auth-container-box'>
         {isLogin ? <LoginForm /> : <RegisterForm />}
         <div className='auth-options'>
