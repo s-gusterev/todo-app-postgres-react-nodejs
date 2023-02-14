@@ -1,24 +1,23 @@
-import React, { useState, forwardRef } from "react";
-import Modal from "./Modal";
-import { motion } from "framer-motion";
-
-import ProgressBar from "./ProgressBar";
-import TickIcon from "./TickIcon";
-const ListItem = forwardRef((props, ref) => {
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import ModalMain from './Modal';
+import ProgressBar from './ProgressBar';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import { Button } from '@mui/material';
+const ListItem = ({ task, getData }) => {
   const [showModal, setShowModal] = useState(false);
 
   const apiUrl =
-    import.meta.env.VITE_SERVERURL || "https://test-api.onedieta.ru/todo-app";
+    import.meta.env.VITE_SERVERURL || 'https://test-api.onedieta.ru/todo-app';
 
   const deleteItem = async () => {
     try {
-      const response = await fetch(`${apiUrl}/todos/${props.task.id}`, {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
+      const response = await fetch(`${apiUrl}/todos/${task.id}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
       });
       if (response.status === 200) {
-        console.log(`Дело ${props.task.title} удалено`);
-        props.getData();
+        getData();
       }
     } catch (error) {
       console.error(error);
@@ -28,53 +27,50 @@ const ListItem = forwardRef((props, ref) => {
   return (
     <>
       <motion.li
-        className="list-item"
-        initial={{ opacity: 0, y: -10 }}
+        className='list-item'
+        initial={{ opacity: 0, y: -100 }}
         transition={{ duration: 0.3 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0 }}
       >
-        <div className="info-container">
-          <TickIcon />
-          <p className="task-title">{props.task.title}</p>
-          <ProgressBar progress={props.task.progress} />
+        <div className='info-container'>
+          <CheckCircleIcon color='success' sx={{ padding: 1 }} />
+          <p className='task-title'>{task.title}</p>
+          <ProgressBar progress={task.progress} />
         </div>
-        <div className="button-container">
-          <button className="edit" onClick={() => setShowModal(true)}>
+        <div className='button-container'>
+          <Button
+            variant='contained'
+            color='success'
+            size='small'
+            sx={{ marginRight: 2 }}
+            onClick={() => setShowModal(true)}
+          >
             РЕДАКТИРОВАТЬ
-          </button>
-          <button className="delete" onClick={deleteItem}>
+          </Button>
+          <Button
+            variant='contained'
+            color='error'
+            size='small'
+            sx={{ marginRight: 2 }}
+            onClick={deleteItem}
+          >
             УДАЛИТЬ
-          </button>
+          </Button>
         </div>
       </motion.li>
       {showModal && (
-        <motion.div
-          style={{
-            position: "absolute",
-            left: 0,
-            right: 0,
-            bottom: 0,
-            top: 0,
-            zIndex: 4,
-            overflow: "hidden",
-          }}
-          initial={{ opacity: 0 }}
-          transition={{ duration: 0.3 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-        >
-          <Modal
-            mode="edit"
-            setShowModal={setShowModal}
-            task={props.task}
-            getData={props.getData}
-            modeText="Отредактировать дело"
-          />
-        </motion.div>
+        <ModalMain
+          mode='edit'
+          setShowModal={showModal}
+          handleClose={() => setShowModal(false)}
+          modeText='Редактировать дело'
+          getData={getData}
+          task={task}
+        />
       )}
     </>
   );
-});
+};
 
 export default ListItem;

@@ -1,24 +1,37 @@
-import { useState } from "react";
-import { useCookies } from "react-cookie";
+import { useState } from 'react';
+import { useCookies } from 'react-cookie';
+import TextField from '@mui/material/TextField';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContentText from '@mui/material/DialogContentText';
+import Slider from '@mui/material/Slider';
+import MainButton from './MainButton';
 
-const Modal = ({ mode, setShowModal, getData, task, modeText }) => {
+const ModalMain = ({
+  mode,
+  setShowModal,
+  getData,
+  task,
+  modeText,
+  handleClose,
+}) => {
   const apiUrl =
-    import.meta.env.VITE_SERVERURL || "https://test-api.onedieta.ru/todo-app";
-  const editMode = mode === "edit" ? true : false;
+    import.meta.env.VITE_SERVERURL || 'https://test-api.onedieta.ru/todo-app';
+  const editMode = mode === 'edit' ? true : false;
   const [cookies, setCookie, removeCookie] = useCookies(null);
   const [data, setData] = useState({
     user_email: editMode ? task.user_email : cookies.Email,
-    title: editMode ? task.title : null,
-    progress: editMode ? task.progress : "50",
+    title: editMode ? task.title : '',
+    progress: editMode ? task.progress : 0,
     date: editMode ? task.date : new Date(),
   });
+  const [buttonText, setButtonText] = useState('Сохранить');
+  const [isFetch, setIsFetch] = useState(false);
 
-  const [buttonText, setButtonText] = useState("Сохранить");
   const handleChange = (e) => {
-    console.log("Change");
-
     const { name, value } = e.target;
-
     setData((data) => ({
       ...data,
       [name]: value,
@@ -27,15 +40,17 @@ const Modal = ({ mode, setShowModal, getData, task, modeText }) => {
 
   const postData = async (e) => {
     e.preventDefault();
-    setButtonText("Сохранение...");
+    setButtonText('Сохранение...');
     try {
+      setIsFetch(true);
       const response = await fetch(`${apiUrl}/todos`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       });
+
       if (response.status === 200) {
-        setShowModal(false);
+        handleClose();
         getData();
       }
     } catch (error) {
@@ -45,16 +60,16 @@ const Modal = ({ mode, setShowModal, getData, task, modeText }) => {
 
   const editData = async (e) => {
     e.preventDefault();
-    setButtonText("Сохранение...");
+    setButtonText('Сохранение...');
     try {
+      setIsFetch(true);
       const response = await fetch(`${apiUrl}/todos/${task.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       });
-      console.log(data);
       if (response.status === 200) {
-        setShowModal(false);
+        handleClose();
         getData();
       }
     } catch (error) {
@@ -63,51 +78,53 @@ const Modal = ({ mode, setShowModal, getData, task, modeText }) => {
   };
 
   return (
-    <>
-      <div className="modal">
-        <div className="form-title-container">
-          <h3>{modeText}</h3>
-          <button
-            className="close-modal"
-            onClick={() => setShowModal(false)}
-          ></button>
-        </div>
-        <form>
-          <input
-            type="text"
+    <Dialog open={setShowModal} onClose={handleClose}>
+      <DialogTitle>{modeText}</DialogTitle>
+      <form onSubmit={editMode ? editData : postData}>
+        <DialogContent
+          sx={{
+            width: 500,
+            maxWidth: '100%',
+          }}
+        >
+          <TextField
             required
-            maxLength={30}
-            placeholder=" Название"
-            name="title"
-            value={data.title || ""}
+            autoFocus
+            margin='dense'
+            id='title'
+            label='Название дела'
+            type='text'
+            fullWidth
+            variant='standard'
+            value={data.title || ''}
             onChange={handleChange}
+            name='title'
+            inputProps={{
+              maxLength: 30,
+            }}
           />
-          <label htmlFor="range">
-            Перетащите ползунок для отображения прогресса задачи
-          </label>
-          <p className="progress-text">{data.progress} %</p>
-          <input
-            id="range"
-            type="range"
-            required
-            min="0"
-            max="100"
-            name="progress"
+          <DialogContentText mt={3}>Установите прогресс дела</DialogContentText>
+          <Slider
+            defaultValue={0}
+            aria-label='Default'
+            valueLabelDisplay='auto'
+            name='progress'
             value={data.progress}
             onChange={handleChange}
           />
-          <input
-            className="edit"
-            type="submit"
-            onClick={editMode ? editData : postData}
-            disabled={!data.title}
-            value={buttonText}
+        </DialogContent>
+        <DialogActions>
+          <MainButton
+            color='secondary'
+            variant='contained'
+            handleClick={() => {}}
+            text={buttonText}
+            disabled={isFetch || !data.title}
+            type='submit'
           />
-        </form>
-      </div>
-      <div className="overlay" onClick={() => setShowModal(false)}></div>
-    </>
+        </DialogActions>
+      </form>
+    </Dialog>
   );
 };
-
-export default Modal;
+export default ModalMain;

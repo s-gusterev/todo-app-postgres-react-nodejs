@@ -23,23 +23,22 @@ const ProgressBar = ({ progress }) => {
 
   return (
     <div className="outer-bar">
-      {/* <AnimatePresence> */}
-      <motion.div
-        className="inner-bar"
-        style={{
-          width: `${progress}%`,
-          backgroundColor: setProgressColor(progress),
-        }}
-        initial={{ width: 0 }}
-        animate={{
-          // backgroundColor: setProgressColor(progress),
-          width: `${progress}%`,
-        }}
-        transition={{ duration: 2 }}
-      >
-        <span>{progress}%</span>
-      </motion.div>
-      {/* </AnimatePresence> */}
+      <AnimatePresence initial={false}>
+        <motion.div
+          className="inner-bar"
+          style={{
+            width: `${progress}%`,
+            backgroundColor: setProgressColor(progress),
+          }}
+          initial={{ width: 0 }}
+          animate={{
+            width: `${progress}%`,
+          }}
+          transition={{ duration: 2 }}
+        >
+          <span>{progress}%</span>
+        </motion.div>
+      </AnimatePresence>
     </div>
   );
 };
