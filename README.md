@@ -3,9 +3,13 @@
 ## Технологии
 
 - React
+
 - JavaScript
+
 - CSS
+
 - PostgreSQL
+
 - Express
 
-<https://s-gusterev.github.io/todo-app-postgres-react-nodejs/>
+[Ссылка на проект](https://s-gusterev.github.io/todo-app-postgres-react-nodejs/)
