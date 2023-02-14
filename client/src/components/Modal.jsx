@@ -1,13 +1,13 @@
-import { useState } from "react";
-import { useCookies } from "react-cookie";
-import TextField from "@mui/material/TextField";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogContentText from "@mui/material/DialogContentText";
-import Slider from "@mui/material/Slider";
-import MainButton from "./MainButton";
+import { useState } from 'react';
+import { useCookies } from 'react-cookie';
+import TextField from '@mui/material/TextField';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContentText from '@mui/material/DialogContentText';
+import Slider from '@mui/material/Slider';
+import MainButton from './MainButton';
 
 const ModalMain = ({
   mode,
@@ -18,16 +18,16 @@ const ModalMain = ({
   handleClose,
 }) => {
   const apiUrl =
-    import.meta.env.VITE_SERVERURL || "https://test-api.onedieta.ru/todo-app";
-  const editMode = mode === "edit" ? true : false;
+    import.meta.env.VITE_SERVERURL || 'https://test-api.onedieta.ru/todo-app';
+  const editMode = mode === 'edit' ? true : false;
   const [cookies, setCookie, removeCookie] = useCookies(null);
   const [data, setData] = useState({
     user_email: editMode ? task.user_email : cookies.Email,
-    title: editMode ? task.title : "",
+    title: editMode ? task.title : '',
     progress: editMode ? task.progress : 0,
     date: editMode ? task.date : new Date(),
   });
-  const [buttonText, setButtonText] = useState("Сохранить");
+  const [buttonText, setButtonText] = useState('Сохранить');
   const [isFetch, setIsFetch] = useState(false);
 
   const handleChange = (e) => {
@@ -40,12 +40,12 @@ const ModalMain = ({
 
   const postData = async (e) => {
     e.preventDefault();
-    setButtonText("Сохранение...");
+    setButtonText('Сохранение...');
     try {
       setIsFetch(true);
       const response = await fetch(`${apiUrl}/todos`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       });
 
@@ -60,12 +60,12 @@ const ModalMain = ({
 
   const editData = async (e) => {
     e.preventDefault();
-    setButtonText("Сохранение...");
+    setButtonText('Сохранение...');
     try {
       setIsFetch(true);
       const response = await fetch(`${apiUrl}/todos/${task.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       });
       if (response.status === 200) {
@@ -84,41 +84,43 @@ const ModalMain = ({
         <DialogContent
           sx={{
             width: 500,
-            maxWidth: "100%",
+            maxWidth: '100%',
           }}
         >
           <TextField
             required
             autoFocus
-            margin="dense"
-            id="title"
-            label="Название дела"
-            type="text"
+            margin='dense'
+            id='title'
+            label='Название дела'
+            type='text'
             fullWidth
-            variant="standard"
-            value={data.title || ""}
+            variant='standard'
+            value={data.title || ''}
             onChange={handleChange}
-            name="title"
-            maxLength={30}
+            name='title'
+            inputProps={{
+              maxLength: 30,
+            }}
           />
           <DialogContentText mt={3}>Установите прогресс дела</DialogContentText>
           <Slider
             defaultValue={0}
-            aria-label="Default"
-            valueLabelDisplay="auto"
-            name="progress"
+            aria-label='Default'
+            valueLabelDisplay='auto'
+            name='progress'
             value={data.progress}
             onChange={handleChange}
           />
         </DialogContent>
         <DialogActions>
           <MainButton
-            color="secondary"
-            variant="contained"
+            color='secondary'
+            variant='contained'
             handleClick={() => {}}
             text={buttonText}
             disabled={isFetch || !data.title}
-            type="submit"
+            type='submit'
           />
         </DialogActions>
       </form>

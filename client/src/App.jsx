@@ -37,40 +37,27 @@ const App = () => {
 
   return (
     <>
-      {showModalCreate && (
-        <ModalMain
-          mode='create'
-          setShowModal={showModalCreate}
-          handleClose={() => setShowModalCreate(false)}
-          modeText='Добавить новое дело'
-          getData={getData}
-          task={tasks}
-        />
-      )}
-
       {!authToken && <Auth />}
       {authToken && (
         <>
           <ListHeader
             listName={'Список дел'}
-            getData={getData}
             setShowModal={() => setShowModalCreate(true)}
           />
-          <Container maxWidth='md'>
+          <Container maxWidth='md' sx={{ flex: 1 }}>
             <p className='user-email'>Привет, {userName} 👋</p>
-            <AnimatePresence initial={false}>
-              {sortedTasks?.length === 0 && (
-                <motion.p
-                  className='not-tasks'
-                  initial={{ opacity: 0, display: 'none' }}
-                  animate={{ opacity: 1, display: 'block' }}
-                  transition={{ duration: 1 }}
-                  exit={{ opacity: 0, display: 'none' }}
-                >
-                  На сегодня дел нет или все выполнено
-                </motion.p>
-              )}
-            </AnimatePresence>
+
+            {sortedTasks?.length === 0 && (
+              <motion.p
+                className='not-tasks'
+                initial={{ opacity: 0, display: 'none' }}
+                animate={{ opacity: 1, display: 'block' }}
+                transition={{ duration: 1 }}
+                exit={{ opacity: 0, display: 'none' }}
+              >
+                На сегодня дел нет или все выполнено
+              </motion.p>
+            )}
 
             <ul className='list-todos'>
               <AnimatePresence initial={false}>
@@ -82,11 +69,23 @@ const App = () => {
           </Container>
         </>
       )}
-      <p className='copyright'>
-        <a href='https://github.com/s-gusterev' target='_blank'>
-          © Сергей Густерёв
-        </a>
-      </p>
+      <Container>
+        <p className='copyright'>
+          <a href='https://github.com/s-gusterev' target='_blank'>
+            © Сергей Густерёв
+          </a>
+        </p>
+      </Container>
+      {showModalCreate && (
+        <ModalMain
+          mode='create'
+          setShowModal={showModalCreate}
+          handleClose={() => setShowModalCreate(false)}
+          modeText='Добавить новое дело'
+          getData={getData}
+          task={tasks}
+        />
+      )}
     </>
   );
 };

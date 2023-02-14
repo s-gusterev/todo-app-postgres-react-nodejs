@@ -1,86 +1,118 @@
 import { useState } from 'react';
-import { useCookies } from 'react-cookie';
+import { useRef } from 'react';
+import useForm from './useForm';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
 
 const LoginForm = () => {
-  const [cookies, setCookie, removeCookie] = useCookies(null);
+  const formRef = useRef(null);
+  const {
+    formState,
+    handleChange,
+    validateForm,
+    submitForm,
+    error,
+    disabledButtonState,
+  } = useForm({
+    email: { value: '', isValid: false, errorMessage: '' },
+    password: { value: '', isValid: false, errorMessage: '' },
+  });
   const apiUrl =
-    import.meta.env.VITE_SERVERURL || 'https://test-api.onedieta.ru/todo-app';
-  const [error, setError] = useState(null);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+    `${import.meta.env.VITE_SERVERURL}/login` ||
+    'https://test-api.onedieta.ru/todo-app/login';
+
   const [buttonText, setButtonText] = useState('Войти');
+  const [disabledButton, setDisabledButton] = useState(false);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setButtonText('Входим...');
-    const response = await fetch(`${apiUrl}/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    });
-
-    const data = await response.json();
-
-    if (data.detail) {
-      setError(data.detail);
-      setButtonText('Войти');
-    } else {
-      setCookie('Email', data.email);
-      setCookie('Token', data.token);
-      setCookie('Name', data.name);
-
-      window.location.reload();
-    }
+  const inputValues = {
+    email: formState.email.value,
+    password: formState.password.value,
   };
 
+  function handleSubmit(event) {
+    event.preventDefault();
+    const sendButtonText = () => setButtonText('Входим...');
+    setDisabledButton(false);
+    if (formRef.current.checkValidity()) {
+      validateForm(formRef);
+      const buttonText = () => setButtonText('Войти');
+      submitForm(apiUrl, inputValues, buttonText, sendButtonText);
+    }
+  }
+
   return (
-    <form>
+    <Box
+      component='form'
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        height: 450,
+        padding: 3,
+      }}
+      ref={formRef}
+      onSubmit={handleSubmit}
+      noValidate
+    >
       <h2>Войти</h2>
+      <Box sx={{ position: 'relative' }}>
+        <TextField
+          required
+          autoFocus
+          margin='dense'
+          id='email'
+          label='E-mail'
+          type='email'
+          fullWidth
+          variant='standard'
+          value={formState.email.value}
+          onChange={handleChange}
+          name='email'
+          sx={{ marginBottom: 3 }}
+          inputProps={{
+            autoComplete: 'off',
+          }}
+        />
+        <span className='error-input'>{formState.email.errorMessage}</span>
+      </Box>
 
-      <TextField
-        required
-        autoFocus
-        margin='dense'
-        id='email'
-        label='E-mail'
-        type='email'
-        fullWidth
-        variant='standard'
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        name='email'
-        sx={{ marginBottom: 2 }}
-      />
-
-      <TextField
-        required
-        autoFocus
-        margin='dense'
-        id='password'
-        label='Пароль'
-        type='password'
-        fullWidth
-        variant='standard'
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        name='password'
-        sx={{ marginBottom: 5 }}
-      />
+      <Box sx={{ position: 'relative' }}>
+        <TextField
+          required
+          margin='dense'
+          id='password'
+          label='Пароль'
+          type='password'
+          fullWidth
+          variant='standard'
+          value={formState.password.value}
+          onChange={handleChange}
+          name='password'
+          sx={{ marginBottom: 5 }}
+          inputProps={{
+            minLength: 6,
+          }}
+        />
+        <span className='error-input'>{formState.password.errorMessage}</span>{' '}
+      </Box>
 
       <Button
         variant='contained'
         color='success'
         size='large'
-        onClick={(e) => handleSubmit(e)}
         type='submit'
+        disabled={
+          !formState.email.isValid ||
+          !formState.password.isValid ||
+          disabledButton ||
+          disabledButtonState
+        }
       >
         {buttonText}
       </Button>
 
       {error && <p className='error-auth'>{error}</p>}
-    </form>
+    </Box>
   );
 };
 

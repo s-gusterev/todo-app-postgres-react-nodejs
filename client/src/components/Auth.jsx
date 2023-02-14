@@ -10,32 +10,30 @@ const Auth = () => {
   };
 
   return (
-    <div
-      initial={{ opacity: 0, y: '-100%' }}
-      transition={{ duration: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0 }}
-      className='auth-container'
-    >
+    <div className='auth-container'>
       <div className='auth-container-box'>
         {isLogin ? <LoginForm /> : <RegisterForm />}
         <div className='auth-options'>
           <button
+            className={`${
+              !isLogin ? 'auth-button' : 'auth-button auth-button_cursor'
+            }`}
             onClick={() => viewLogin(false)}
             style={{
-              backgroundColor: !isLogin
-                ? 'rgb(255, 255, 255)'
-                : 'rgb(188, 188, 188)',
+              backgroundColor: !isLogin ? 'transparent' : '#1976d2',
+              color: !isLogin ? '#000' : '#fff',
             }}
           >
             Регистрация
           </button>
           <button
+            className={`${
+              !isLogin ? 'auth-button auth-button_cursor' : 'auth-button'
+            }`}
             onClick={() => viewLogin(true)}
             style={{
-              backgroundColor: isLogin
-                ? 'rgb(255, 255, 255)'
-                : 'rgb(188, 188, 188)',
+              backgroundColor: !isLogin ? '#1976d2' : 'transparent',
+              color: !isLogin ? '#fff' : '#000',
             }}
           >
             Вход

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import ModalMain from './Modal';
 import ProgressBar from './ProgressBar';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';

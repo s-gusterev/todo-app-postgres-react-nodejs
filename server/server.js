@@ -20,7 +20,6 @@ app.get('/todo-app/todos/:userEmail', async (req, res) => {
       'SELECT * FROM todos WHERE user_email = $1',
       [userEmail]
     );
-    console.log(todos.rows);
     res.json(todos.rows);
   } catch (error) {
     console.error(error);
@@ -31,7 +30,6 @@ app.get('/todo-app/todos/:userEmail', async (req, res) => {
 
 app.post('/todo-app/todos', async (req, res) => {
   const { user_email, title, progress, date } = req.body;
-  console.log(user_email, title, progress, date);
   const id = uuidv4();
 
   try {
