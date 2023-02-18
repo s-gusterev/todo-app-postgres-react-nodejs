@@ -1,92 +1,243 @@
-import ListHeader from './components/ListHeader';
-import ListItem from './components/ListItem';
-import Auth from './components/Auth';
 import { useEffect, useState } from 'react';
-import { useCookies } from 'react-cookie';
-import { motion, AnimatePresence } from 'framer-motion';
-import ModalMain from './components/Modal';
-import { Container } from '@mui/material';
+import { Routes, Route, useNavigate, Navigate } from 'react-router-dom';
+import CurrentUserContext from './contexts/CurrentUserContext';
+import LoginForm from './components/LoginForm';
+import RegisterForm from './components/RegisterForm';
+import Home from './components/Home';
+import Modal from './components/Modal';
+import { api } from './utils/restApi';
 
 const App = () => {
-  const [cookies, setCookie, removeCookie] = useCookies(null);
-  const userEmail = cookies.Email;
-  const authToken = cookies.Token;
-  const userName = cookies.Name;
-  const [tasks, SetTasks] = useState([]);
-  const [showModalCreate, setShowModalCreate] = useState(false);
-  const apiUrl =
-    import.meta.env.VITE_SERVERURL || 'https://test-api.onedieta.ru/todo-app';
+  const navigate = useNavigate();
+  const [tasks, setTasks] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(
+    JSON.parse(localStorage.getItem('auth')) || null
+  );
+  const [currentUser, setCurrentUser] = useState({
+    name: '',
+    user_id: '',
+    email: '',
+    token: '',
+  });
+  const [errorApi, setErrorApi] = useState(null);
+  const [disabledButton, setDisabledButton] = useState(false);
+  const [buttonText, setButtonText] = useState('Отправить');
 
-  const getData = async () => {
-    try {
-      const response = await fetch(`${apiUrl}/todos/${userEmail}`);
-      const json = await response.json();
-      SetTasks(json);
-    } catch (error) {
-      console.error(error);
+  // Функция показа ошибок
+
+  const showError = (error) => {
+    setErrorApi(error);
+    setTimeout(() => setErrorApi(null), 3000);
+  };
+
+  // Функция разблокировка кнопок
+
+  const disableBlockingButton = (boolen) => {
+    setDisabledButton(boolen);
+    setTimeout(() => setDisabledButton(false), 1000);
+  };
+
+  // Функция проверки авторизации
+
+  const tokenCheck = () => {
+    let jwt = localStorage.getItem('jwt');
+    if (jwt) {
+      api
+        .getUser(jwt)
+        .then((res) => {
+          if (res) {
+            setCurrentUser({
+              name: res.name,
+              user_id: res.user_id,
+              email: res.email,
+              token: res.token,
+            });
+          }
+          setIsLoggedIn(true);
+          showError(null);
+          setDisabledButton(false);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      localStorage.removeItem('jwt');
+      localStorage.removeItem('auth');
     }
   };
 
-  useEffect(() => {
-    getData();
-  }, [authToken]);
+  // Вход в систему
 
-  const sortedTasks = tasks?.sort(
-    (a, b) => new Date(b.date) - new Date(a.date)
-  );
+  const login = (password, email) => {
+    setDisabledButton(true);
+    setButtonText('Отправка...');
+    api
+      .login(password, email)
+      .then((data) => {
+        localStorage.setItem('jwt', data.token);
+        localStorage.setItem('auth', true);
+        tokenCheck();
+        console.log(data);
+        if (data.error) {
+          showError(data.error);
+          disableBlockingButton(false);
+          setButtonText('Отправить');
+          localStorage.removeItem('jwt');
+          localStorage.removeItem('auth');
+        }
+      })
+      .catch((err) => {
+        if (err.statusCode === 401) {
+          showError(err.message);
+          disableBlockingButton(false);
+          setButtonText('Отправить');
+        }
+        console.log(err);
+      });
+  };
+
+  // Регистрация
+
+  const signup = (name, password, email) => {
+    setDisabledButton(true);
+    setButtonText('Отправка...');
+    api
+      .signup(name, password, email)
+      .then((data) => {
+        localStorage.setItem('jwt', data.token);
+        localStorage.setItem('auth', true);
+        tokenCheck();
+      })
+      .catch((err) => {
+        if (err.statusCode >= 400) {
+          showError(err.message);
+          disableBlockingButton(false);
+          setButtonText('Отправить');
+        }
+        console.log(err);
+      });
+  };
+
+  // Выход из системы
+
+  const logout = () => {
+    localStorage.removeItem('jwt');
+    localStorage.removeItem('auth');
+    setIsLoggedIn(false);
+    setButtonText('Отправить');
+    setTasks(null);
+  };
+
+  const postData = (title, progress) => {
+    api
+      .postTasks(title, progress)
+      .then((res) => {
+        setTasks([res, ...tasks]);
+        setShowModal(false);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  // Обновление списка задач
+
+  const handleUpdateTasks = (updatedTask) => {
+    const updatedTasks = tasks.map((task) =>
+      task.id === updatedTask.id ? updatedTask : task
+    );
+
+    setTasks(updatedTasks);
+  };
+
+  // Удаление задачи
+
+  const deleteTasks = (task) => {
+    api
+      .deleteTasks(task)
+
+      .then(() => {
+        setTasks((state) => state.filter((c) => c.id !== task));
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  // Проверка токена
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate('/');
+      const jwt = localStorage.getItem('jwt');
+      api
+        .getTasks(jwt)
+        .then((data) => {
+          setTasks(data);
+        })
+        .catch((error) => {
+          console.log(error);
+          if (error.statusCode === 401) {
+            navigate('/login');
+          }
+        });
+    }
+    tokenCheck();
+  }, [isLoggedIn]);
 
   return (
-    <>
-      {!authToken && <Auth />}
-      {authToken && (
-        <>
-          <ListHeader
-            listName={'Список дел'}
-            setShowModal={() => setShowModalCreate(true)}
-          />
-          <Container maxWidth='md' sx={{ flex: 1 }}>
-            <p className='user-email'>Привет, {userName} 👋</p>
-
-            {sortedTasks?.length === 0 && (
-              <motion.p
-                className='not-tasks'
-                initial={{ opacity: 0, display: 'none' }}
-                animate={{ opacity: 1, display: 'block' }}
-                transition={{ duration: 1 }}
-                exit={{ opacity: 0, display: 'none' }}
-              >
-                На сегодня дел нет или все выполнено
-              </motion.p>
-            )}
-
-            <ul className='list-todos'>
-              <AnimatePresence initial={false}>
-                {sortedTasks.map((task) => (
-                  <ListItem key={task.id} task={task} getData={getData} />
-                ))}
-              </AnimatePresence>
-            </ul>
-          </Container>
-        </>
-      )}
-      <Container>
-        <p className='copyright'>
-          <a href='https://github.com/s-gusterev' target='_blank'>
-            © Сергей Густерёв
-          </a>
-        </p>
-      </Container>
-      {showModalCreate && (
-        <ModalMain
+    <CurrentUserContext.Provider value={currentUser}>
+      <Routes>
+        <Route
+          path='/'
+          element={
+            isLoggedIn ? (
+              <Home
+                tasks={tasks}
+                showModal={() => setShowModal(true)}
+                logout={logout}
+                onUpdateTask={handleUpdateTasks}
+                onDeleteTask={deleteTasks}
+              />
+            ) : (
+              <Navigate to='/login' />
+            )
+          }
+        />
+        <Route
+          path='/login'
+          element={
+            <LoginForm
+              onSubmit={login}
+              error={errorApi}
+              disabledButtonSubmit={disabledButton}
+              buttonText={buttonText}
+            />
+          }
+        />
+        <Route
+          path='/signup'
+          element={
+            <RegisterForm
+              onSubmit={signup}
+              error={errorApi}
+              disabledButtonSubmit={disabledButton}
+              buttonText={buttonText}
+            />
+          }
+        />
+      </Routes>
+      {showModal && (
+        <Modal
           mode='create'
-          setShowModal={showModalCreate}
-          handleClose={() => setShowModalCreate(false)}
+          showModal={showModal}
+          handleClose={() => setShowModal(false)}
           modeText='Добавить новое дело'
-          getData={getData}
-          task={tasks}
+          onSubmit={postData}
         />
       )}
-    </>
+    </CurrentUserContext.Provider>
   );
 };
 

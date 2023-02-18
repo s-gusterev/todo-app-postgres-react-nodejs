@@ -1,27 +1,14 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import ModalMain from './Modal';
+import { motion } from 'framer-motion';
+import Modal from './Modal';
 import ProgressBar from './ProgressBar';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { Button } from '@mui/material';
-const ListItem = ({ task, getData }) => {
+const ListItem = ({ task, onUpdateTask, onDeleteTask }) => {
   const [showModal, setShowModal] = useState(false);
 
-  const apiUrl =
-    import.meta.env.VITE_SERVERURL || 'https://test-api.onedieta.ru/todo-app';
-
-  const deleteItem = async () => {
-    try {
-      const response = await fetch(`${apiUrl}/todos/${task.id}`, {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-      });
-      if (response.status === 200) {
-        getData();
-      }
-    } catch (error) {
-      console.error(error);
-    }
+  const handleClickDeleteTask = () => {
+    onDeleteTask(task.id);
   };
 
   return (
@@ -53,20 +40,20 @@ const ListItem = ({ task, getData }) => {
             color='error'
             size='small'
             sx={{ marginRight: 2 }}
-            onClick={deleteItem}
+            onClick={handleClickDeleteTask}
           >
             УДАЛИТЬ
           </Button>
         </div>
       </motion.li>
       {showModal && (
-        <ModalMain
+        <Modal
           mode='edit'
-          setShowModal={showModal}
+          showModal={showModal}
           handleClose={() => setShowModal(false)}
           modeText='Редактировать дело'
-          getData={getData}
           task={task}
+          onUpdateTask={onUpdateTask}
         />
       )}
     </>

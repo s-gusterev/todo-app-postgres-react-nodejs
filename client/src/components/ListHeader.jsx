@@ -1,18 +1,9 @@
-import { useCookies } from 'react-cookie';
 import { AppBar } from '@mui/material';
 import { Container } from '@mui/material';
 import { Box } from '@mui/material';
 import MainButton from './MainButton';
 
-const ListHeader = ({ listName, setShowModal }) => {
-  const [cookies, setCookie, removeCookie] = useCookies(null);
-
-  const singOut = () => {
-    removeCookie('Email');
-    removeCookie('Token');
-    removeCookie('Name');
-  };
-
+const ListHeader = ({ listName, showModal, logout }) => {
   return (
     <AppBar position='relative' sx={{ width: '100vw' }}>
       <Container
@@ -27,13 +18,13 @@ const ListHeader = ({ listName, setShowModal }) => {
           <MainButton
             color='secondary'
             variant='contained'
-            handleClick={setShowModal}
+            handleClick={showModal}
             text='Добавить новое дело'
           />
           <MainButton
             color='info'
             variant='contained'
-            handleClick={singOut}
+            handleClick={logout}
             text='Выход'
           />
         </Box>

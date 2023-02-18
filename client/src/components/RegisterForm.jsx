@@ -1,197 +1,184 @@
 import { useState } from 'react';
-import { useRef } from 'react';
-import useForm from './useForm';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
+import { Link } from 'react-router-dom';
 
-const RegisterForm = () => {
-  const formRef = useRef(null);
-  const {
-    formState,
-    handleChange,
-    validateForm,
-    submitForm,
-    error,
-    disabledButtonState,
-  } = useForm({
-    name: { value: '', isValid: false, errorMessage: '' },
-    email: { value: '', isValid: false, errorMessage: '' },
-    password: { value: '', isValid: false, errorMessage: '' },
-    'confirm-password': { value: '', isValid: false, errorMessage: '' },
+const RegisterForm = ({
+  onSubmit,
+  error,
+  disabledButtonSubmit,
+  buttonText,
+}) => {
+  const [data, setData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    'confirm-password': '',
   });
-  const apiUrl =
-    `${import.meta.env.VITE_SERVERURL}/signup` ||
-    'https://test-api.onedieta.ru/todo-app/signup';
 
-  const [buttonText, setButtonText] = useState('Зарегистрироваться');
-  const [disabledButton, setDisabledButton] = useState(false);
-  const [formErrors, setFormErrors] = useState({});
-
-  const inputValues = {
-    name: formState.name.value,
-    email: formState.email.value,
-    password: formState.password.value,
-    'confirm-password': formState.password.value,
+  const handleChange = (event) => {
+    const { name, value, validity, validationMessage } = event.target;
+    setData({
+      ...data,
+      [name]: {
+        value,
+        isValid: validity.valid,
+        errorMessage: validity.valid ? '' : validationMessage,
+      },
+    });
   };
 
-  const passwordRef = useRef();
-  const confirmPasswordRef = useRef();
+  const formValidity =
+    data.name.isValid &&
+    data.email.isValid &&
+    data.password.isValid &&
+    data['confirm-password'].isValid;
 
-  function validatePassword() {
-    const errors = {};
-    const password = passwordRef.current.value;
-    const confirmPassword = confirmPasswordRef.current.value;
-    if (password !== confirmPassword) {
-      errors.confirmPassword = 'Пароли не совпадают';
-    }
-    return errors;
-  }
+  const passwordValidity =
+    data.password.value !== data['confirm-password'].value
+      ? 'Пароли не совпадают'
+      : null;
 
-  function handleSubmit(event) {
+  const handleSubmit = (event) => {
     event.preventDefault();
-
-    const errors = validatePassword();
-    if (Object.keys(errors).length > 0) {
-      setFormErrors(errors);
-      setTimeout(() => {
-        setFormErrors({});
-      }, 2000);
-      return;
-    }
-
-    setFormErrors({});
-
-    const sendButtonText = () => setButtonText('Регистрируемся...');
-    setDisabledButton(false);
-    if (formRef.current.checkValidity()) {
-      validateForm(formRef);
-      const buttonText = () => setButtonText('Зарегистрироваться');
-      submitForm(apiUrl, inputValues, buttonText, sendButtonText);
-    }
-  }
+    onSubmit({
+      name: data.name.value,
+      email: data.email.value,
+      password: data.password.value,
+    });
+  };
 
   return (
-    <Box
-      component='form'
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        height: 450,
-        padding: 3,
-      }}
-      ref={formRef}
-      onSubmit={handleSubmit}
-      noValidate
-    >
-      <h2>Регистрация</h2>
-      <Box sx={{ position: 'relative' }}>
-        <TextField
-          required
-          autoFocus
-          margin='dense'
-          id='name'
-          label='Имя'
-          type='text'
-          fullWidth
-          variant='standard'
-          value={formState.name.value}
-          onChange={handleChange}
-          name='name'
-          sx={{ marginBottom: 3 }}
-          inputProps={{
-            autoComplete: 'off',
-            minLength: 3,
-            maxLength: 20,
+    <div className='auth-container'>
+      <div className='auth-container-box'>
+        <Box
+          component='form'
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            height: 450,
+            padding: 3,
           }}
-        />
-        <span className='error-input'>{formState.name.errorMessage}</span>
-      </Box>
+          onSubmit={handleSubmit}
+          noValidate
+        >
+          <h2>Регистрация</h2>
+          <Box sx={{ position: 'relative' }}>
+            <TextField
+              required
+              autoFocus
+              margin='dense'
+              id='name'
+              label='Имя'
+              type='text'
+              fullWidth
+              variant='standard'
+              onChange={handleChange}
+              name='name'
+              sx={{ marginBottom: 3 }}
+              inputProps={{
+                autoComplete: 'off',
+                minLength: 3,
+                maxLength: 20,
+              }}
+            />
+            <span className='error-input'>{data.name.errorMessage}</span>
+          </Box>
 
-      <Box sx={{ position: 'relative' }}>
-        <TextField
-          required
-          margin='dense'
-          id='email'
-          label='E-mail'
-          type='email'
-          fullWidth
-          variant='standard'
-          value={formState.email.value}
-          onChange={handleChange}
-          name='email'
-          sx={{ marginBottom: 3 }}
-          inputProps={{
-            autoComplete: 'off',
-          }}
-        />
-        <span className='error-input'>{formState.email.errorMessage}</span>
-      </Box>
+          <Box sx={{ position: 'relative' }}>
+            <TextField
+              required
+              margin='dense'
+              id='email'
+              label='E-mail'
+              type='email'
+              fullWidth
+              variant='standard'
+              onChange={handleChange}
+              name='email'
+              sx={{ marginBottom: 3 }}
+              inputProps={{
+                autoComplete: 'off',
+              }}
+            />
+            <span className='error-input'>{data.email.errorMessage}</span>
+          </Box>
 
-      <Box sx={{ position: 'relative' }}>
-        <TextField
-          inputRef={passwordRef}
-          required
-          margin='dense'
-          id='password'
-          label='Пароль'
-          type='password'
-          fullWidth
-          variant='standard'
-          value={formState.password.value}
-          onChange={handleChange}
-          name='password'
-          sx={{ marginBottom: 3 }}
-          inputProps={{
-            minLength: 6,
-          }}
-        />
-        <span className='error-input'>{formState.password.errorMessage}</span>{' '}
-      </Box>
+          <Box sx={{ position: 'relative' }}>
+            <TextField
+              required
+              margin='dense'
+              id='password'
+              label='Пароль'
+              type='password'
+              fullWidth
+              variant='standard'
+              onChange={handleChange}
+              name='password'
+              sx={{ marginBottom: 3 }}
+              inputProps={{
+                minLength: 6,
+              }}
+            />
+            <span className='error-input'>{data.password.errorMessage}</span>
+          </Box>
 
-      <Box sx={{ position: 'relative' }}>
-        <TextField
-          inputRef={confirmPasswordRef}
-          required
-          margin='dense'
-          id='сonfirm-password'
-          label='Подтвердите пароль'
-          type='password'
-          fullWidth
-          variant='standard'
-          value={formState['confirm-password'].value}
-          onChange={handleChange}
-          name='confirm-password'
-          sx={{ marginBottom: 3 }}
-          inputProps={{
-            minLength: 6,
-          }}
-        />
-        <span className='error-input'>
-          {formState['confirm-password'].errorMessage}
-        </span>
-      </Box>
-      <Button
-        variant='contained'
-        color='success'
-        size='large'
-        type='submit'
-        disabled={
-          !formState.name.isValid ||
-          !formState.email.isValid ||
-          !formState.password.isValid ||
-          !formState['confirm-password'].isValid ||
-          disabledButton ||
-          disabledButtonState
-        }
-      >
-        {buttonText}
-      </Button>
-      {error && <p className='error-auth'>{error}</p>}
-      {formErrors.confirmPassword && (
-        <p className='error-auth'>{formErrors.confirmPassword}</p>
-      )}
-    </Box>
+          <Box sx={{ position: 'relative' }}>
+            <TextField
+              required
+              margin='dense'
+              id='сonfirm-password'
+              label='Подтвердите пароль'
+              type='password'
+              fullWidth
+              variant='standard'
+              onChange={handleChange}
+              name='confirm-password'
+              sx={{ marginBottom: 3 }}
+              inputProps={{
+                minLength: 6,
+              }}
+            />
+            <span className='error-input'>
+              {data['confirm-password'].errorMessage}
+            </span>
+          </Box>
+          <Button
+            variant='contained'
+            color='success'
+            size='large'
+            type='submit'
+            disabled={!formValidity || disabledButtonSubmit || passwordValidity}
+          >
+            {buttonText}
+          </Button>
+          {error && <p className='error-auth'>{error}</p>}
+          {passwordValidity && <p className='error-auth'>{passwordValidity}</p>}
+        </Box>
+        <div className='auth-options'>
+          <div
+            className='auth-button'
+            style={{
+              backgroundColor: 'transparent',
+              color: '#000',
+            }}
+          >
+            Регистрация
+          </div>
+          <Link
+            to='/login'
+            className='auth-button'
+            style={{
+              backgroundColor: '#1976d2',
+              color: '#fff',
+            }}
+          >
+            Вход
+          </Link>
+        </div>
+      </div>
+    </div>
   );
 };
 

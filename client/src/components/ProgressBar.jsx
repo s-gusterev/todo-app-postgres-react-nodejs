@@ -1,5 +1,4 @@
-import { motion, AnimatePresence } from "framer-motion";
-
+import { motion, AnimatePresence } from 'framer-motion';
 const ProgressBar = ({ progress }) => {
   // const colors = [
   //   "rgb(255, 214, 161)",
@@ -12,20 +11,20 @@ const ProgressBar = ({ progress }) => {
 
   const setProgressColor = (progress) => {
     if (progress <= 49) {
-      return "rgb(255, 214, 161)";
+      return 'rgb(255, 214, 161)';
     }
     if (progress >= 50 && progress < 80) {
-      return "rgb(255,175,163)";
+      return 'rgb(255,175,163)';
     } else {
-      return "rgb(141, 181, 145)";
+      return 'rgb(141, 181, 145)';
     }
   };
 
   return (
-    <div className="outer-bar">
+    <div className='outer-bar'>
       <AnimatePresence initial={false}>
         <motion.div
-          className="inner-bar"
+          className='inner-bar'
           style={{
             width: `${progress}%`,
             backgroundColor: setProgressColor(progress),
@@ -36,7 +35,7 @@ const ProgressBar = ({ progress }) => {
           }}
           transition={{ duration: 2 }}
         >
-          <span>{progress}%</span>
+          <span>{`${progress} %`}</span>
         </motion.div>
       </AnimatePresence>
     </div>
