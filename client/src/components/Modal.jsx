@@ -66,13 +66,15 @@ const Modal = ({
 
   return (
     <Dialog open={showModal} onClose={handleClose}>
-      <DialogTitle>{modeText}</DialogTitle>
+      <DialogTitle sx={{ fontSize: { xl: '20px', sm: '20px', xs: '16px' } }}>
+        {modeText}
+      </DialogTitle>
       <form onSubmit={editMode ? editData : handleSubmitPost}>
         <DialogContent
           sx={{
-            width: 500,
+            width: { xl: 500, sm: 450, xs: 250 },
             maxWidth: '100%',
-            paddingInline: '28px',
+            paddingInline: { xl: '28px', sm: '25px', xs: '15px' },
           }}
         >
           <TextField

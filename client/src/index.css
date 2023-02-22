@@ -160,3 +160,14 @@ span {
   left: 0;
   top: 60px;
 }
+
+@media screen and (max-width: 850px) {
+  .list-item {
+    flex-direction: column;
+    padding: 10px;
+  }
+  .outer-bar {
+    margin-left: auto;
+    width: 260px;
+  }
+}

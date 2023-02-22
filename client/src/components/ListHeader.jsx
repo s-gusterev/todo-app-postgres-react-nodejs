@@ -5,7 +5,10 @@ import MainButton from './MainButton';
 
 const ListHeader = ({ listName, showModal, logout }) => {
   return (
-    <AppBar position='relative' sx={{ width: '100vw' }}>
+    <AppBar
+      position='relative'
+      sx={{ width: '100vw', height: { sm: 100, xs: 150 } }}
+    >
       <Container
         sx={{
           flexDirection: { xl: 'row', md: 'row', sm: 'row', xs: 'column' },
