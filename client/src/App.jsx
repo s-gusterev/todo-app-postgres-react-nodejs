@@ -11,9 +11,7 @@ const App = () => {
   const navigate = useNavigate();
   const [tasks, setTasks] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(
-    JSON.parse(localStorage.getItem('auth')) || null
-  );
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [currentUser, setCurrentUser] = useState({
     name: '',
     user_id: '',
@@ -29,13 +27,6 @@ const App = () => {
   const showError = (error) => {
     setErrorApi(error);
     setTimeout(() => setErrorApi(null), 3000);
-  };
-
-  // Функция разблокировка кнопок
-
-  const disableBlockingButton = (boolen) => {
-    setDisabledButton(boolen);
-    setTimeout(() => setDisabledButton(false), 1000);
   };
 
   // Функция проверки авторизации
@@ -56,14 +47,12 @@ const App = () => {
           }
           setIsLoggedIn(true);
           showError(null);
-          setDisabledButton(false);
         })
         .catch((err) => {
           console.log(err);
         });
     } else {
       localStorage.removeItem('jwt');
-      localStorage.removeItem('auth');
     }
   };
 
@@ -76,21 +65,18 @@ const App = () => {
       .login(password, email)
       .then((data) => {
         localStorage.setItem('jwt', data.token);
-        localStorage.setItem('auth', true);
         tokenCheck();
-        console.log(data);
         if (data.error) {
           showError(data.error);
-          disableBlockingButton(false);
+          setDisabledButton(false);
           setButtonText('Отправить');
           localStorage.removeItem('jwt');
-          localStorage.removeItem('auth');
         }
       })
       .catch((err) => {
         if (err.statusCode === 401) {
           showError(err.message);
-          disableBlockingButton(false);
+          setDisabledButton(false);
           setButtonText('Отправить');
         }
         console.log(err);
@@ -106,13 +92,12 @@ const App = () => {
       .signup(name, password, email)
       .then((data) => {
         localStorage.setItem('jwt', data.token);
-        localStorage.setItem('auth', true);
         tokenCheck();
       })
       .catch((err) => {
         if (err.statusCode >= 400) {
           showError(err.message);
-          disableBlockingButton(false);
+          setDisabledButton(false);
           setButtonText('Отправить');
         }
         console.log(err);
@@ -123,10 +108,10 @@ const App = () => {
 
   const logout = () => {
     localStorage.removeItem('jwt');
-    localStorage.removeItem('auth');
     setIsLoggedIn(false);
     setButtonText('Отправить');
     setTasks(null);
+    setDisabledButton(false);
   };
 
   const postData = (title, progress) => {
@@ -169,22 +154,25 @@ const App = () => {
 
   useEffect(() => {
     if (isLoggedIn) {
-      navigate('/');
       const jwt = localStorage.getItem('jwt');
       api
         .getTasks(jwt)
         .then((data) => {
           setTasks(data);
+          navigate('/');
         })
         .catch((error) => {
           console.log(error);
           if (error.statusCode === 401) {
             navigate('/login');
+            setIsLoggedIn(false);
           }
         });
     }
     tokenCheck();
   }, [isLoggedIn]);
+
+  console.log(isLoggedIn);
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
